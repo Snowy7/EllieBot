@@ -1,10 +1,23 @@
-const qrcode = require('qrcode-terminal');
-const { Client, LocalAuth } = require('whatsapp-web.js');
+const express = require("express");
+const app = express();
 
-const client = new Client({ puppeteer: {headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']}});
-console.log('Connecting...');
+app.get("/", function (req, res) {
+  res.send("Hello World");
+});
 
-let welcomeMsg = `╭───── • 𒀭 • ─────╮
+const qrcode = require("qrcode-terminal");
+const { Client, LocalAuth } = require("whatsapp-web.js");
+
+const client = new Client({
+  puppeteer: {
+    headless: true,
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  },
+});
+console.log("Connecting...");
+
+let formMsgs = ["استماره", "استمارة"]
+let form = `╭───── • 𒀭 • ─────╮
 ◘ يُرجى منك تعبئة الاستمارة◘
 
 ●اختر اللقب :
@@ -21,20 +34,33 @@ let welcomeMsg = `╭───── • 𒀭 • ─────╮
 ● كيف حصلت على الروابط :
 「」
 ╰───── • 𒀭 • ─────╯
-𝄪𝐖𝐞𝐥𝐜𝐨𝐦𝐞 𝐭𝐨 𝐄𝐥𝐥𝐢𝐞𝄪`
+𝄪𝐖𝐞𝐥𝐜𝐨𝐦𝐞 𝐭𝐨 𝐄𝐥𝐥𝐢𝐞𝄪`;
 
-client.on('qr', (qr) => {
-    console.log('QR RECEIVED');
-    qrcode.generate(qr, { small: true });
+let islamicHi = ["السلام عليكم", "سلام عليكم"]
+let islamicHiReply = ["وعليكم السلام ورحمة الله وبركاته", "وعليكم السلام"]
+
+let informalHi = ["هلا", "مرحبا"]
+let informalHiReply = ["اهلين", "مراحب"]
+
+client.on("qr", (qr) => {
+  console.log("QR RECEIVED");
+  qrcode.generate(qr, { small: true });
 });
 
-client.on('ready', () => {
-    console.log('Client is ready!');
+client.on("ready", () => {
+  console.log("Client is ready!");
+
+  app.listen(3000);
 });
-client.on('message', message => {
-	if(message.body === 'استمارة') {
-		message.reply(welcomeMsg);
-	}
+client.on("message", (message) => {
+  if (islamicHi.some(v => message.body.includes(v)) && message.body.split(" ").length < 3) {
+    message.reply(welcomeMsg);
+  }else if (islamicHi.some(v => message.body.includes(v))){
+    message.reply(islamicHiReply[Math.floor(Math.random() * islamicHiReply.length)])
+  }else if (informalHi.some(v => message.body.includes(v)) && message.body.split(" ").length < 3) {
+    message.reply(informalHiReply[Math.floor(Math.random() * informalHiReply.length)])
+  }
+
 });
-console.log('Initializing...');
+console.log("Initializing...");
 client.initialize();
