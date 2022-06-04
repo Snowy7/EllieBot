@@ -53,11 +53,11 @@ client.on("ready", () => {
   app.listen(3000);
 });
 client.on("message", (message) => {
-  if (islamicHi.some(v => message.body.includes(v)) && message.body.split(" ").length < 3) {
-    message.reply(welcomeMsg);
-  }else if (islamicHi.some(v => message.body.includes(v))){
+  if (formMsgs.includes(message.body) || formMsgs.some(v => message.body.includes(v)) && message.body.split(" ").length < 3) {
+    message.reply(form);
+  }else if (islamicHi.includes(message.body) || islamicHi.some(v => message.body.includes(v))){
     message.reply(islamicHiReply[Math.floor(Math.random() * islamicHiReply.length)])
-  }else if (informalHi.some(v => message.body.includes(v)) && message.body.split(" ").length < 3) {
+  }else if (informalHi.includes(message.body) || informalHi.some(v => message.body.includes(v)) && message.body.split(" ").length < 3) {
     message.reply(informalHiReply[Math.floor(Math.random() * informalHiReply.length)])
   }
 
